@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hazard Report</title>
+<title>SafeSight Hazard Report</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <script src="https://npmcdn.com/parse/dist/parse.min.js"></script>
@@ -783,7 +783,7 @@
   <div class="topbar-icon">
     <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.5L20.5 19h-17L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
   </div>
-  <div class="topbar-title">SafeSight <span>Hazard Report </span></div>
+  <div class="topbar-title">SafeSight <span>Hazard Report</span></div>
   <div class="topbar-spacer"></div>
   <div class="badge-live">Prototype</div>
 </header>
@@ -865,7 +865,7 @@
         </div>
         <div class="field">
           <label>Location Description <span class="req">*</span></label>
-          <input type="text" id="f-location" placeholder="e.g. MTS Office Complex, Mine Geologist and Database Team Office " required />
+          <input type="text" id="f-location" placeholder="e.g. MTS Office Complex, Mine Geologist and Database Team Office" required />
         </div>
       </div>
     </div>
@@ -979,8 +979,6 @@
   </form>
 </div>
 
-<div>Designed by Kwabena Ntim </div>
-
 <!-- CAMERA MODAL -->
 <div class="cam-modal" id="camModal">
   <video id="cam-video" autoplay playsinline muted></video>
@@ -1013,6 +1011,23 @@
   </button>
   <button class="btn-new" onclick="resetForm()">Submit Another Report</button>
 </div>
+
+<!-- DESIGNER CREDIT -->
+<div style="
+  position: fixed; bottom: 0; left: 0; right: 0;
+  text-align: center;
+  padding: 6px 12px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(13,15,18,0.85);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--border);
+  z-index: 50;
+  pointer-events: none;
+">Designed by Kwabena Ntim</div>
 
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
@@ -1372,17 +1387,22 @@ document.getElementById('reportForm').addEventListener('submit', async (e) => {
 let lastReport = null;
 
 // ── EMAIL SUPERVISOR ──
+// ── UPDATE THIS to your GitHub Pages base URL (no trailing slash) ──
+const VIEWER_BASE_URL = 'https://devkwabs94.github.io/SafeSight';
+
 function emailSupervisor() {
   if (!lastReport) return;
   const r = lastReport;
 
+  const viewerLink = `${VIEWER_BASE_URL}/report-viewer.html?id=${r.id}`;
+
   const gpsLine = r.gps
-    ? `GPS Coordinates: X=${r.gps.lat.toFixed(6)}, Y=${r.gps.lng.toFixed(6)}, Z=${r.gps.alt !== null ? r.gps.alt.toFixed(1) + 'm' : 'N/A'}`
+    ? `GPS: X=${r.gps.lat.toFixed(6)}, Y=${r.gps.lng.toFixed(6)}, Z=${r.gps.alt !== null ? r.gps.alt.toFixed(1) + 'm' : 'N/A'}`
     : 'GPS Coordinates: Not captured';
 
-  const mediaLines = r.media.length > 0
-    ? r.media.map((m, i) => `  ${i+1}. [${m.type.toUpperCase()}] ${m.name}\n     ${m.url}`).join('\n')
-    : '  No media attached';
+  const mediaNote = r.media.length > 0
+    ? `${r.media.length} file(s) attached — view via report link above`
+    : 'No media attached';
 
   const followupLine = r.followup === 'Yes'
     ? `Follow-up Required: YES\nFollow-up Details: ${r.followupDetails || 'See report'}`
@@ -1392,18 +1412,21 @@ function emailSupervisor() {
     `HAZARD REPORT NOTIFICATION`,
     `Reference ID: ${r.id}`,
     ``,
+    `View Full Report (with photos/videos):`,
+    viewerLink,
+    ``,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     `REPORTER DETAILS`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-    `Name:         ${r.name}`,
-    `ID Number:    ${r.idNumber}`,
-    `Department:   ${r.department}`,
-    `Date:         ${r.date}`,
+    `Name:        ${r.name}`,
+    `ID Number:   ${r.idNumber}`,
+    `Department:  ${r.department}`,
+    `Date:        ${r.date}`,
     ``,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     `HAZARD DETAILS`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-    `Location:     ${r.location}`,
+    `Location:    ${r.location}`,
     gpsLine,
     ``,
     `Description:`,
@@ -1412,14 +1435,14 @@ function emailSupervisor() {
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     `ACTIONS TAKEN`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-    `Action Taken:       ${r.action}`,
+    `Action Taken:     ${r.action}`,
     followupLine,
-    `Risk Controlled:    ${r.riskControlled}`,
+    `Risk Controlled:  ${r.riskControlled}`,
     ``,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     `MEDIA EVIDENCE`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-    mediaLines,
+    mediaNote,
     ``,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     `This report was submitted via the Hazard Reporting System.`,
