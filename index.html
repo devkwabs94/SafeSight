@@ -783,9 +783,9 @@
   <div class="topbar-icon">
     <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.5L20.5 19h-17L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
   </div>
-  <div class="topbar-title">Hazard <span>Report</span></div>
+  <div class="topbar-title">SafeSight <span>Hazard Report </span></div>
   <div class="topbar-spacer"></div>
-  <div class="badge-live">Live Form</div>
+  <div class="badge-live">Prototype</div>
 </header>
 
 <!-- HERO -->
@@ -816,7 +816,7 @@
           </div>
           <div class="field">
             <label>ID Number <span class="req">*</span></label>
-            <input type="text" id="f-id" placeholder="e.g. EMP-00421" required />
+            <input type="text" id="f-id" placeholder="e.g. GT 186" required />
           </div>
         </div>
         <div class="grid-2" style="margin-bottom:14px">
@@ -826,12 +826,12 @@
           </div>
           <div class="field">
             <label>Department <span class="req">*</span></label>
-            <input type="text" id="f-dept" placeholder="e.g. Maintenance" required />
+            <input type="text" id="f-dept" placeholder="e.g. MTS" required />
           </div>
         </div>
         <div class="field">
           <label>Supervisor Email <span class="req">*</span></label>
-          <input type="email" id="f-supervisor-email" placeholder="supervisor@company.com" required />
+          <input type="email" id="f-supervisor-email" placeholder="kwabena.ntim@perseusmining.com" required />
         </div>
       </div>
     </div>
@@ -865,7 +865,7 @@
         </div>
         <div class="field">
           <label>Location Description <span class="req">*</span></label>
-          <input type="text" id="f-location" placeholder="e.g. Building 3, Floor 2, near storage room B" required />
+          <input type="text" id="f-location" placeholder="e.g. MTS Office Complex, Mine Geologist and Database Team Office " required />
         </div>
       </div>
     </div>
@@ -879,7 +879,7 @@
       <div class="section-body">
         <div class="field">
           <label>Describe the Hazard <span class="req">*</span></label>
-          <textarea id="f-description" placeholder="Describe what you observed in detail — include the type of hazard, potential risks, and any contributing factors..." required></textarea>
+          <textarea id="f-description" placeholder="Describe what you observed in detail, and any contributing factors..." required></textarea>
         </div>
       </div>
     </div>
@@ -962,6 +962,7 @@
             <button type="button" class="toggle-btn" data-value="No" onclick="setToggle('riskGroup','No',this,'no')">No</button>
           </div>
           <input type="hidden" id="f-risk" />
+          <a>Designed by Kwabena Ntim</a>
         </div>
 
       </div>
