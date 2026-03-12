@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <script src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
 <style>
   :root {
     --orange: #FF6B1A;
@@ -1126,15 +1127,64 @@ dropZone.addEventListener('drop', (e) => {
   handleFiles([...e.dataTransfer.files]);
 });
 
-function handleFiles(files) {
-  files.forEach(file => {
-    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
-      toast(`${file.name} is not a supported media type.`, 'error'); return;
+async function handleFiles(files) {
+
+  for (const file of files) {
+
+    let processedFile = file;
+
+    // Detect HEIC / HEIF images
+    if (
+      file.type === "image/heic" ||
+      file.type === "image/heif" ||
+      file.name.toLowerCase().endsWith(".heic") ||
+      file.name.toLowerCase().endsWith(".heif")
+    ) {
+
+      toast("Converting HEIC image…", "info");
+
+      try {
+
+        const convertedBlob = await heic2any({
+          blob: file,
+          toType: "image/jpeg",
+          quality: 0.85
+        });
+
+        processedFile = new File(
+          [convertedBlob],
+          file.name.replace(/\.(heic|heif)$/i, ".jpg"),
+          { type: "image/jpeg" }
+        );
+
+        toast("HEIC converted to JPG.", "success");
+
+      } catch (err) {
+        console.error(err);
+        toast("HEIC conversion failed.", "error");
+        continue;
+      }
     }
-    const url = URL.createObjectURL(file);
-    mediaFiles.push({ file, url, type: file.type.startsWith('video/') ? 'video' : 'image' });
-    renderPreviews();
-  });
+
+    if (
+      !processedFile.type.startsWith("image/") &&
+      !processedFile.type.startsWith("video/")
+    ) {
+      toast(`${processedFile.name} is not supported.`, "error");
+      continue;
+    }
+
+    const url = URL.createObjectURL(processedFile);
+
+    mediaFiles.push({
+      file: processedFile,
+      url,
+      type: processedFile.type.startsWith("video/") ? "video" : "image"
+    });
+
+  }
+
+  renderPreviews();
 }
 
 function renderPreviews() {
