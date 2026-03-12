@@ -1128,11 +1128,8 @@ dropZone.addEventListener('drop', (e) => {
 });
 
 async function handleFiles(files) {
-
   for (const file of files) {
-
     let processedFile = file;
-
     // Detect HEIC / HEIF images
     if (
       file.type === "image/heic" ||
@@ -1140,32 +1137,25 @@ async function handleFiles(files) {
       file.name.toLowerCase().endsWith(".heic") ||
       file.name.toLowerCase().endsWith(".heif")
     ) {
-
       toast("Converting HEIC image…", "info");
-
       try {
-
         const convertedBlob = await heic2any({
           blob: file,
           toType: "image/jpeg",
           quality: 0.85
         });
-
         processedFile = new File(
           [convertedBlob],
           file.name.replace(/\.(heic|heif)$/i, ".jpg"),
           { type: "image/jpeg" }
         );
-
         toast("HEIC converted to JPG.", "success");
-
       } catch (err) {
         console.error(err);
         toast("HEIC conversion failed.", "error");
         continue;
       }
     }
-
     if (
       !processedFile.type.startsWith("image/") &&
       !processedFile.type.startsWith("video/")
@@ -1173,7 +1163,6 @@ async function handleFiles(files) {
       toast(`${processedFile.name} is not supported.`, "error");
       continue;
     }
-
     const url = URL.createObjectURL(processedFile);
 
     mediaFiles.push({
@@ -1181,9 +1170,7 @@ async function handleFiles(files) {
       url,
       type: processedFile.type.startsWith("video/") ? "video" : "image"
     });
-
   }
-
   renderPreviews();
 }
 
